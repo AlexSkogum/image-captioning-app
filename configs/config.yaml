@@ -1,0 +1,27 @@
+dataset:
+  type: csv # options: csv, coco, flickr
+  captions_csv: data/captions.csv
+  images_dir: data/images
+  min_freq: 5
+
+training:
+  epochs: 20
+  batch_size: 32
+  lr: 1e-4
+  num_workers: 4
+  device: cuda
+
+model:
+  embedding_dim: 512
+  hidden_dim: 512
+  num_layers: 1
+  dropout: 0.5
+  fine_tune_encoder: false
+
+inference:
+  max_len: 30
+  beam_size: 3
+
+logging:
+  use_wandb: false
+  project: imgcap

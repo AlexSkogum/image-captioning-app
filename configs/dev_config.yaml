@@ -1,0 +1,27 @@
+dataset:
+  type: csv
+  captions_csv: data/small_captions.csv
+  images_dir: ''
+  min_freq: 1
+
+training:
+  epochs: 5
+  batch_size: 1
+  lr: 1e-4
+  num_workers: 0
+  device: cpu
+
+model:
+  embedding_dim: 512
+  hidden_dim: 512
+  num_layers: 1
+  dropout: 0.1
+  fine_tune_encoder: false
+
+inference:
+  max_len: 20
+  beam_size: 3
+
+logging:
+  use_wandb: false
+  project: imgcap-dev

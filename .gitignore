@@ -1,0 +1,10 @@
+__pycache__/
+.venv/
+data/
+*.pth
+*.pt
+wandb/
+env/
+*.pyc
+__MACOSX/
+node_modules/
