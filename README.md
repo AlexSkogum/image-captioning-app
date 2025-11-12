@@ -43,27 +43,24 @@ Do NOT commit large datasets to this repository. Instead, use the Kaggle CLI to 
 
 2. Place your `kaggle.json` token in `%USERPROFILE%\\.kaggle\\kaggle.json` (do NOT commit this file).
 
-3. Download the dataset (example) and unzip into `data/`.
-
-This project used the COCO 2017 dataset hosted on Kaggle. You can download the exact dataset we used with the following command:
+3. Download the Flickr8k dataset from Kaggle using the CLI:
 
 ```powershell
-# official Kaggle dataset used for this project
-kaggle datasets download -d awsaf49/coco-2017-dataset -p data/ --unzip
+kaggle datasets download -d shadabhussain/flickr8k -p data/ --unzip
 ```
 
-Kaggle page: https://www.kaggle.com/awsaf49/coco-2017-dataset
+This downloads the Flickr8k dataset (much smaller than COCO, ~8000 images). The dataset will be extracted to `data/` with images in `data/Images/` and captions in `data/captions.txt`.
 
-4. Create a small sample for quick tests (this repo includes helper scripts):
+Verify the download completed by checking if `data/Images/` and `data/captions.txt` exist:
 
 ```powershell
-# create a 100-image sample from COCO-style annotations
-python scripts/create_sample_from_coco.py --annotations data/annotations/captions_train2017.json --images-dir data/train2017 --sample-size 100 --out-dir data/sample
+dir data/Images
+cat data/captions.txt
 ```
 
-5. The sample CSV at `data/sample/sample_captions.csv` can be used with the project's preprocessing and training commands.
+4. (Optional) Create a small sample for quick tests:
 
-6. In your submission, include a short note pointing graders to the Kaggle dataset link and the commands above so they can reproduce results. This keeps the GitHub repo small and dependency-free of large data.
+If you want an even smaller subset for faster experimentation, you can manually create a subset or use the provided sampling scripts.
 
 ## Run a quick CPU test (small dataset)
 
