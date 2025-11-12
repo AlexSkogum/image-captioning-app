@@ -43,12 +43,16 @@ Do NOT commit large datasets to this repository. Instead, use the Kaggle CLI to 
 
 2. Place your `kaggle.json` token in `%USERPROFILE%\\.kaggle\\kaggle.json` (do NOT commit this file).
 
-3. Download the dataset (example) and unzip into `data/`:
+3. Download the dataset (example) and unzip into `data/`.
+
+This project used the COCO 2017 dataset hosted on Kaggle. You can download the exact dataset we used with the following command:
 
 ```powershell
-# replace owner/dataset-name with the Kaggle dataset id
-kaggle datasets download -d owner/dataset-name -p data/ --unzip
+# official Kaggle dataset used for this project
+kaggle datasets download -d awsaf49/coco-2017-dataset -p data/ --unzip
 ```
+
+Kaggle page: https://www.kaggle.com/awsaf49/coco-2017-dataset
 
 4. Create a small sample for quick tests (this repo includes helper scripts):
 
