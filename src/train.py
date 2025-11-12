@@ -6,7 +6,6 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
 
 from src.data import ImageCaptionDataset, Vocabulary
 from src.models.model import ImageCaptionModel
@@ -18,11 +17,14 @@ def train_one_epoch(model, dataloader, criterion, optimizer, device):
     for imgs, captions, _ in dataloader:
         imgs = imgs.to(device)
         captions = captions.to(device)
-        lengths = [ (captions[i]!=0).sum().item() for i in range(captions.size(0))]
+        lengths = [(captions[i]!=0).sum().item() for i in range(captions.size(0))]
         optimizer.zero_grad()
         outputs, _ = model(imgs, captions, lengths)
         # outputs: (B, max_len, vocab)
+        # targets: shift captions by 1 (teacher forcing)
         targets = captions[:, 1:outputs.size(1)+1]
+        
+        # Calculate loss with ignore_index for padding
         loss = criterion(outputs.view(-1, outputs.size(2)), targets.reshape(-1))
         loss.backward()
         optimizer.step()
@@ -65,13 +67,10 @@ def main():
     criterion = nn.CrossEntropyLoss(ignore_index=vocab.word2idx['<pad>'])
     optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=cfg['training']['lr'])
 
-    writer = SummaryWriter(log_dir='runs/exp')
-
     best_loss = float('inf')
     for epoch in range(1, (2 if args.dev else cfg['training']['epochs']) + 1):
         t0 = time.time()
         avg_loss = train_one_epoch(model, dataloader, criterion, optimizer, device)
-        writer.add_scalar('train/loss', avg_loss, epoch)
         print(f'Epoch {epoch} loss={avg_loss:.4f} time={(time.time()-t0):.1f}s')
         # checkpoint
         ckpt = {'model_state': model.state_dict(), 'vocab_size': len(vocab.word2idx)}
@@ -79,8 +78,6 @@ def main():
         if avg_loss < best_loss:
             best_loss = avg_loss
             torch.save(ckpt, 'checkpoints/best.pth')
-
-    writer.close()
 
 
 if __name__ == '__main__':

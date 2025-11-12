@@ -45,23 +45,45 @@ class DecoderRNN(nn.Module):
     def forward(self, encoder_out, captions, lengths):
         # encoder_out: (B, num_pixels, encoder_dim)
         embeddings = self.embed(captions)  # (B, max_len, embed_dim)
+        batch_size = encoder_out.size(0)
+        max_len = max(lengths)
+        device = embeddings.device
+        
+        # Initialize hidden states
         h, c = self.init_hidden_state(encoder_out)
         outputs = []
         alphas = []
-        for t in range(max(lengths)):
+        
+        # Initialize a tensor to store outputs padded to max_len
+        pred_outputs = torch.zeros(batch_size, max_len, self.fcn.out_features, device=device)
+        
+        for t in range(max_len):
+            # Only process sequences that have not ended
             batch_size_t = sum([l > t for l in lengths])
+            
+            if batch_size_t == 0:
+                break
+            
+            # Get attention encoding for active sequences
             attention_weighted_encoding, alpha = self.attention(encoder_out[:batch_size_t], h[:batch_size_t])
             input_l = torch.cat([embeddings[:batch_size_t, t, :], attention_weighted_encoding], dim=1)
             h_t, c_t = self.decode_step(input_l, (h[:batch_size_t], c[:batch_size_t]))
             preds = self.fcn(self.dropout(h_t))
-            outputs.append(preds)
+            
+            # Store outputs
+            pred_outputs[:batch_size_t, t, :] = preds
+            
             alphas.append(alpha)
-            h = h.clone()
-            c = c.clone()
-            h[:batch_size_t] = h_t
-            c[:batch_size_t] = c_t
-        outputs = torch.stack(outputs, dim=1)
-        return outputs, alphas
+            
+            # Update hidden states for all sequences
+            h_new = h.clone()
+            c_new = c.clone()
+            h_new[:batch_size_t] = h_t
+            c_new[:batch_size_t] = c_t
+            h = h_new
+            c = c_new
+        
+        return pred_outputs, alphas
 
     def step(self, prev_word_idx, h, c, encoder_out):
         # one step for inference: prev_word_idx shape (B,)
