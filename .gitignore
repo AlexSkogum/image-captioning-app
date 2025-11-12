@@ -8,3 +8,5 @@ env/
 *.pyc
 __MACOSX/
 node_modules/
+.gradio/
+.vscode/

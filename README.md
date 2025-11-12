@@ -31,6 +31,36 @@ pip install kaggle
 
 3. Configs: edit `configs/config.yaml` for hyperparameters and dataset paths.
 
+### Using a Kaggle dataset (recommended workflow)
+
+Do NOT commit large datasets to this repository. Instead, use the Kaggle CLI to download the dataset locally and create a small sample for submission/testing. The steps below explain the recommended reproducible workflow.
+
+1. Install the Kaggle CLI in your project venv:
+
+```powershell
+.\\.venv\\Scripts\\python.exe -m pip install kaggle
+```
+
+2. Place your `kaggle.json` token in `%USERPROFILE%\\.kaggle\\kaggle.json` (do NOT commit this file).
+
+3. Download the dataset (example) and unzip into `data/`:
+
+```powershell
+# replace owner/dataset-name with the Kaggle dataset id
+kaggle datasets download -d owner/dataset-name -p data/ --unzip
+```
+
+4. Create a small sample for quick tests (this repo includes helper scripts):
+
+```powershell
+# create a 100-image sample from COCO-style annotations
+python scripts/create_sample_from_coco.py --annotations data/annotations/captions_train2017.json --images-dir data/train2017 --sample-size 100 --out-dir data/sample
+```
+
+5. The sample CSV at `data/sample/sample_captions.csv` can be used with the project's preprocessing and training commands.
+
+6. In your submission, include a short note pointing graders to the Kaggle dataset link and the commands above so they can reproduce results. This keeps the GitHub repo small and dependency-free of large data.
+
 ## Run a quick CPU test (small dataset)
 
 1. Prepare a tiny dataset (CSV with columns `image_path,caption`) or use `web/sample_images/`.
