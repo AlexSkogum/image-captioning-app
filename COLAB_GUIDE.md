@@ -7,7 +7,7 @@
    - Klicka **File → Open notebook**
    - Välj **GitHub** tab
    - Sök: `AlexSkogum/image-captioning-app`
-   - Öppna `train_on_colab.ipynb`
+   - Öppna `colab_train_flickr8k.ipynb`
 
 ### 2. **Aktivera GPU**
    - Gå till **Runtime → Change runtime type**
@@ -58,17 +58,17 @@
 
 ## Felsökning
 
-### ❌ "CUDA not available"
+###  "CUDA not available"
 → Du är inte på GPU. Gå till **Runtime → Change runtime type → GPU**
 
-### ❌ "Kaggle API error"
+###  "Kaggle API error"
 → Kontrollera att `kaggle.json` är rätt konfigurerad
 → Använd https://www.kaggle.com/settings/api för att generera ny token
 
-### ❌ "Memory error"
+### "Memory error"
 → Minska `batch_size` i `configs/config.yaml` (från 32 till 16)
 
-### ❌ "Dataset already exists"
+###  "Dataset already exists"
 → Kör denna cell för att rensa:
 ```python
 !rm -rf data/Flickr_Data/
@@ -107,4 +107,4 @@ Efter träning lokalt:
    ```
 4. **Testa på:** http://localhost:7860
 
-**Lycka till! 🚀**
+**Lycka till! **
